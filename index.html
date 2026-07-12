@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
     
     <style>
-        /* ตั้งฟอนต์รวมของหน้าเว็บเป็น Itim ทั้งหมด */
         body { font-family: 'Itim', cursive; text-align: center; background: transparent; margin: 0; padding: 10px; }
         
         input { 
@@ -38,7 +37,7 @@
         /* สไตล์ปุ่มไปต่อ (สีน้ำเงิน) */
         button.next-btn {
             background: #2f80ed;
-            display: none; /* ซ่อนไว้ตอนแรก */
+            display: none; 
             margin: 10px auto 0 auto;
         }
         button.next-btn:hover { background: #1b66c9; }
@@ -52,7 +51,7 @@
     
     <button id="submitBtn" onclick="saveName()">ตกลง</button>
     
-    <button id="nextBtn" class="next-btn" onclick="goToGeniallyNextPage()">ไปต่อ ➡️</button>
+    <button id="nextBtn" class="next-btn" onclick="goToNext()">ไปต่อ ➡️</button>
     
     <div id="status" class="status">✅ บันทึกชื่อเรียบร้อยแล้ว!</div>
 
@@ -60,12 +59,9 @@
         function saveName() {
             var name = document.getElementById('nameInput').value;
             if(name.trim() !== "") {
-                localStorage.setItem('player_name_shared', name); // เก็บชื่อไว้ในบราวเซอร์
+                localStorage.setItem('player_name_shared', name); 
                 
-                // แสดงข้อความสถานะ
                 document.getElementById('status').style.display = 'block';
-                
-                // ซ่อนปุ่มตกลง และเปิดแสดงปุ่มไปต่อแทน
                 document.getElementById('submitBtn').style.display = 'none';
                 document.getElementById('nextBtn').style.display = 'inline-block';
             } else {
@@ -73,9 +69,19 @@
             }
         }
 
-        // ฟังก์ชันส่งคำสั่งสั่งให้ Genially เปลี่ยนสไลด์ไปหน้าถัดไป
-        function goToGeniallyNextPage() {
-            window.parent.postMessage('goNextPage', '*');
+        // ฟังก์ชันใหม่: สั่งเปลี่ยนหน้าต่างหลัก (ตัวเกม Genially) ให้เปลี่ยนหน้า
+        function goToNext() {
+            // ดึงค่า URL หน้าถัดไปของ Genially จาก parameter ที่ส่งมา
+            const urlParams = new URLSearchParams(window.location.search);
+            const nextUrl = urlParams.get('next');
+            
+            if (nextUrl) {
+                // สั่งให้หน้าต่างใหญ่ (Genially) เปลี่ยน URL ไปยังหน้าถัดไปทันที
+                window.parent.location.href = nextUrl;
+            } else {
+                // แผนสำรอง: ถ้าไม่ได้ใส่ลิงก์หน้าถัดไป ให้ลองกระตุ้นระบบเดิม
+                window.parent.postMessage('goNextPage', '*');
+            }
         }
     </script>
 </body>
