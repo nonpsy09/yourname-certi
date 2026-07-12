@@ -2,28 +2,80 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Sarabun', sans-serif; text-align: center; background: transparent; margin: 0; padding: 10px; }
-        input { width: 80%; padding: 12px; border: 2px solid #000000; border-radius: 8px; font-size: 18px; text-align: center; }
-        button { background: #000000; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; font-weight: bold; }
-        .status { color: green; display: none; margin-top: 10px; font-weight: bold; }
+        /* ตั้งฟอนต์รวมของหน้าเว็บเป็น Itim ทั้งหมด */
+        body { font-family: 'Itim', cursive; text-align: center; background: transparent; margin: 0; padding: 10px; }
+        
+        input { 
+            font-family: 'Itim', cursive;
+            width: 80%; 
+            padding: 12px; 
+            border: 2px solid #000000; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            text-align: center; 
+        }
+        
+        button { 
+            font-family: 'Itim', cursive;
+            background: #000000; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            margin-top: 10px; 
+            font-weight: bold; 
+        }
+        
+        /* สไตล์ปุ่มไปต่อ (สีน้ำเงิน) */
+        button.next-btn {
+            background: #2f80ed;
+            display: none; /* ซ่อนไว้ตอนแรก */
+            margin: 10px auto 0 auto;
+        }
+        button.next-btn:hover { background: #1b66c9; }
+        
+        .status { color: green; display: none; margin-top: 10px; font-weight: bold; font-size: 16px; }
     </style>
 </head>
 <body>
     <input type="text" id="nameInput" placeholder="โปรดพิมพ์ชื่อของคุณเพื่อเริ่มการควบคุมคุณภาพ">
     <br>
-    <button onclick="saveName()">ตกลง </button>
-    <div id="status" class="status">✅ บันทึกชื่อเรียบร้อย! กดเพื่อเริ่มเกม</div>
+    
+    <button id="submitBtn" onclick="saveName()">ตกลง</button>
+    
+    <button id="nextBtn" class="next-btn" onclick="goToGeniallyNextPage()">ไปต่อ ➡️</button>
+    
+    <div id="status" class="status">✅ บันทึกชื่อเรียบร้อยแล้ว!</div>
 
     <script>
         function saveName() {
             var name = document.getElementById('nameInput').value;
             if(name.trim() !== "") {
                 localStorage.setItem('player_name_shared', name); // เก็บชื่อไว้ในบราวเซอร์
+                
+                // แสดงข้อความสถานะ
                 document.getElementById('status').style.display = 'block';
+                
+                // ซ่อนปุ่มตกลง และเปิดแสดงปุ่มไปต่อแทน
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'inline-block';
             } else {
                 alert("กรุณากรอกชื่อก่อนครับ");
             }
+        }
+
+        // ฟังก์ชันส่งคำสั่งสั่งให้ Genially เปลี่ยนสไลด์ไปหน้าถัดไป
+        function goToGeniallyNextPage() {
+            window.parent.postMessage('goNextPage', '*');
         }
     </script>
 </body>
