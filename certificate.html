@@ -21,18 +21,18 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
         }
         
-        /* 2. ปรับแต่งชื่อผู้เล่นให้เป็น ฟอนต์ Itim ตัวสีแดง */
+        /* ปรับแต่งชื่อผู้เล่นให้เป็น ฟอนต์ Itim ตัวบางสีดำ */
         .name-display { 
             position: absolute; 
             width: 100%; 
             text-align: center; 
-            top: 44%; /* <--- ปรับเปอร์เซ็นต์ขยับขึ้น-ลง ให้ตรงช่องว่างของเกียรติบัตรคุณได้ตรงนี้ */
+            top: 44%; 
             left: 0; 
-            font-family: 'Itim', cursive; /* ใช้ฟอนต์ไอติม */
-            font-size: 30px;              /* ขนาดตัวอักษรของชื่อ */
+            font-family: 'Itim', cursive; 
+            font-size: 30px;              
             font-weight: normal; 
-            color: #1a1a1a;               /* โค้ดสีแดงสด */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* ใส่เงาบางๆ ให้ชื่อดูมิติชัดขึ้น */
+            color: #1a1a1a;                
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
         }
         
         .btn-zone { margin-top: 15px; display: flex; gap: 10px; }
@@ -48,6 +48,10 @@
             font-size: 16px; 
         }
         button.preview-btn { background: #2f80ed; }
+        
+        /* สไตล์ปุ่มย้อนกลับ (ปุ่มสีส้ม) */
+        button.back-btn { background: #e67e22; margin-top: 10px; margin-bottom: 20px; }
+        button.back-btn:hover { background: #d35400; }
         
         /* โซนแสดงรูปภาพสำหรับกดค้างเซฟบนมือถือ */
         #resultImageZone { display: none; margin-top: 15px; text-align: center; }
@@ -68,6 +72,7 @@
 
     <div id="resultImageZone">
         <p class="hint">👇 ใช้มือถือเปิด: ให้กดค้างที่รูปภาพด้านล่างนี้ แล้วเลือก "บันทึกรูปภาพ" (Save Image) ลงเครื่องได้เลยครับ</p>
+        <button class="back-btn" onclick="goBackToCert()">⬅️ ย้อนกลับไปหน้าเดิม</button>
         <div id="imageContainer"></div>
     </div>
 
@@ -87,11 +92,9 @@
             if (stage === '5') bgImage = 'bg5.png';
             if (stage === '6') bgImage = 'bg6.png';
 
-            // ดึงรูปแบบระบุว่ามาจากโดเมนเดียวกันเพื่อเลี่ยงปัญหา CORS
             document.getElementById('captureArea').style.backgroundImage = "url('" + window.location.origin + window.location.pathname.replace('certificate.html', '') + bgImage + "')";
         };
 
-        // ฟังก์ชันที่ 1: ดาวน์โหลดอัตโนมัติ (เหมาะสำหรับคอมพิวเตอร์)
         function downloadCertificate() {
             var element = document.getElementById("captureArea");
             html2canvas(element, {
@@ -111,7 +114,7 @@
             });
         }
 
-        // ฟังก์ชันที่ 2: แปลงเป็นรูปแปะบนจอ (ออกแบบมาแก้ปัญหาระบบบล็อกดาวน์โหลดบนมือถือและ iframe)
+        // กดปุ่มฟ้า -> ซ่อนหน้าเดิม โชว์รูปภาพและปุ่มส้มย้อนกลับ
         function generateImageForMobile() {
             var element = document.getElementById("captureArea");
             html2canvas(element, {
@@ -124,14 +127,20 @@
                 imgElement.src = imgData;
                 
                 var container = document.getElementById("imageContainer");
-                container.innerHTML = ""; // ล้างรูปเก่า
+                container.innerHTML = ""; 
                 container.appendChild(imgElement);
                 
-                // ซ่อนโซนเก่า แสดงโซนรูปภาพใหม่แทน
                 document.getElementById("captureArea").style.display = "none";
                 document.getElementById("btnZone").style.display = "none";
                 document.getElementById("resultImageZone").style.display = "block";
             });
+        }
+
+        // ฟังก์ชันใหม่: เมื่อกดปุ่มส้ม -> สั่งซ่อนรูป แล้วดีดเกียรติบัตรกับปุ่มสีเขียว/ฟ้ากลับมาเหมือนเดิม
+        function goBackToCert() {
+            document.getElementById("resultImageZone").style.display = "none";
+            document.getElementById("captureArea").style.display = "block";
+            document.getElementById("btnZone").style.display = "flex";
         }
     </script>
 </body>
