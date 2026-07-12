@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; text-align: center; background: transparent; margin: 0; padding: 10px; }
+        input { width: 80%; padding: 12px; border: 2px solid #000000; border-radius: 8px; font-size: 18px; text-align: center; }
+        button { background: #000000; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; font-weight: bold; }
+        .status { color: green; display: none; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <input type="text" id="nameInput" placeholder="โปรดพิมพ์ชื่อของคุณเพื่อเริ่มการควบคุมคุณภาพ">
+    <br>
+    <button onclick="saveName()">ตกลง </button>
+    <div id="status" class="status">✅ บันทึกชื่อเรียบร้อย! กดเพื่อเริ่มเกม</div>
+
+    <script>
+        function saveName() {
+            var name = document.getElementById('nameInput').value;
+            if(name.trim() !== "") {
+                localStorage.setItem('player_name_shared', name); // เก็บชื่อไว้ในบราวเซอร์
+                document.getElementById('status').style.display = 'block';
+            } else {
+                alert("กรุณากรอกชื่อก่อนครับ");
+            }
+        }
+    </script>
+</body>
+</html>
