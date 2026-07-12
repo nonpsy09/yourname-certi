@@ -21,7 +21,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
         }
         
-        /* ปรับแต่งชื่อผู้เล่นให้เป็น ฟอนต์ Itim ตัวบางสีดำ */
+        /* ชื่อผู้เล่นฟอนต์ Itim ตัวบางสีดำ */
         .name-display { 
             position: absolute; 
             width: 100%; 
@@ -50,7 +50,6 @@
         }
         button:hover { background: #219653; }
         
-        /* สไตล์ของปุ่มไปหน้าถัดไป (สีน้ำเงิน) */
         button.next-page-btn { background: #2f80ed; }
         button.next-page-btn:hover { background: #1b66c9; }
     </style>
@@ -63,16 +62,22 @@
     
     <div class="btn-zone">
         <button onclick="downloadCertificate()">ดาวน์โหลดรูปภาพ</button>
-        <button class="next-page-btn" onclick="goToGeniallyNextPage()">ไปหน้าถัดไปในเกม</button>
+        <button class="next-page-btn" onclick="goToGeniallyTargetPage()">ไปหน้าถัดไปในเกม</button>
     </div>
 
     <script>
+        // ประกาศตัวแปรเก็บชื่อหน้าปลายทางของ Genially
+        var targetPageName = "";
+
         window.onload = function() {
             var savedName = localStorage.getItem('player_name_shared');
             document.getElementById('displayName').innerText = savedName ? savedName : "ผู้เข้าร่วมกิจกรรม";
 
             const urlParams = new URLSearchParams(window.location.search);
             const stage = urlParams.get('stage');
+            
+            // ดึงค่าหน้าปลายทางที่เราใส่ไว้ในลิงก์มาเก็บไว้
+            targetPageName = urlParams.get('go_to');
             
             var bgImage = 'bg1.png'; 
             if (stage === '1') bgImage = 'bg1.png';
@@ -104,10 +109,15 @@
             });
         }
 
-        /* ฟังก์ชันส่งคำสั่งสั่งให้ Genially เปลี่ยนหน้าหลัก */
-        function goToGeniallyNextPage() {
-            // ส่งข้อความสั่งให้หน้าต่างแม่ (Genially) เปลี่ยนไปหน้าถัดไป (Next Page)
-            window.parent.postMessage('goNextPage', '*');
+        // ฟังก์ชันสั่งเปลี่ยนหน้า Genially แบบระบุหน้าปลายทางเจาะจง
+        function goToGeniallyTargetPage() {
+            if (targetPageName) {
+                // ส่งคำสั่งให้ Genially กระโดดไปที่ "ชื่อหน้าสไลด์" ที่เรากำหนดไว้
+                window.parent.postMessage('goToPage:' + targetPageName, '*');
+            } else {
+                // เผื่อลืมระบุชื่อหน้า จะให้เลื่อนไปหน้าถัดไปแบบปกติ
+                window.parent.postMessage('goNextPage', '*');
+            }
         }
     </script>
 </body>
