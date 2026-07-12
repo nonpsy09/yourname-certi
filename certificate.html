@@ -46,17 +46,13 @@
             cursor: pointer; 
             font-weight: bold; 
             font-size: 16px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        button.preview-btn { background: #2f80ed; }
+        button:hover { background: #219653; }
         
-        /* สไตล์ปุ่มย้อนกลับ (ปุ่มสีส้ม) */
-        button.back-btn { background: #e67e22; margin-top: 10px; margin-bottom: 20px; }
-        button.back-btn:hover { background: #d35400; }
-        
-        /* โซนแสดงรูปภาพสำหรับกดค้างเซฟบนมือถือ */
-        #resultImageZone { display: none; margin-top: 15px; text-align: center; }
-        #resultImageZone img { width: 100%; max-width: 600px; border: 2px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .hint { color: #555; font-size: 14px; margin-top: 5px; font-weight: bold; font-family: 'Prompt', sans-serif; }
+        /* สไตล์ของปุ่มไปหน้าถัดไป (สีน้ำเงิน) */
+        button.next-page-btn { background: #2f80ed; }
+        button.next-page-btn:hover { background: #1b66c9; }
     </style>
 </head>
 <body>
@@ -65,15 +61,9 @@
         <div id="displayName" class="name-display">กำลังโหลด...</div>
     </div>
     
-    <div class="btn-zone" id="btnZone">
+    <div class="btn-zone">
         <button onclick="downloadCertificate()">ดาวน์โหลดรูปภาพ</button>
-        <button class="preview-btn" onclick="generateImageForMobile()">แสดงรูปสำหรับมือถือ</button>
-    </div>
-
-    <div id="resultImageZone">
-        <p class="hint">👇 ใช้มือถือเปิด: ให้กดค้างที่รูปภาพด้านล่างนี้ แล้วเลือก "บันทึกรูปภาพ" (Save Image) ลงเครื่องได้เลยครับ</p>
-        <button class="back-btn" onclick="goBackToCert()">⬅️ ย้อนกลับไปหน้าเดิม</button>
-        <div id="imageContainer"></div>
+        <button class="next-page-btn" onclick="goToGeniallyNextPage()">ไปหน้าถัดไปในเกม</button>
     </div>
 
     <script>
@@ -110,37 +100,14 @@
                 link.click();
                 document.body.removeChild(link);
             }).catch(function(error) {
-                alert("เกิดข้อผิดพลาดในการสร้างรูปภาพ กรุณาลองใช้ปุ่ม 'แสดงรูปสำหรับมือถือ' แทนนะครับ");
+                alert("ไม่สามารถบันทึกรูปภาพได้อัตโนมัติเนื่องจากระบบรักษาความปลอดภัย");
             });
         }
 
-        // กดปุ่มฟ้า -> ซ่อนหน้าเดิม โชว์รูปภาพและปุ่มส้มย้อนกลับ
-        function generateImageForMobile() {
-            var element = document.getElementById("captureArea");
-            html2canvas(element, {
-                useCORS: true,
-                allowTaint: false,
-                scale: 2
-            }).then(function(canvas) {
-                var imgData = canvas.toDataURL("image/png");
-                var imgElement = document.createElement("img");
-                imgElement.src = imgData;
-                
-                var container = document.getElementById("imageContainer");
-                container.innerHTML = ""; 
-                container.appendChild(imgElement);
-                
-                document.getElementById("captureArea").style.display = "none";
-                document.getElementById("btnZone").style.display = "none";
-                document.getElementById("resultImageZone").style.display = "block";
-            });
-        }
-
-        // ฟังก์ชันใหม่: เมื่อกดปุ่มส้ม -> สั่งซ่อนรูป แล้วดีดเกียรติบัตรกับปุ่มสีเขียว/ฟ้ากลับมาเหมือนเดิม
-        function goBackToCert() {
-            document.getElementById("resultImageZone").style.display = "none";
-            document.getElementById("captureArea").style.display = "block";
-            document.getElementById("btnZone").style.display = "flex";
+        /* ฟังก์ชันส่งคำสั่งสั่งให้ Genially เปลี่ยนหน้าหลัก */
+        function goToGeniallyNextPage() {
+            // ส่งข้อความสั่งให้หน้าต่างแม่ (Genially) เปลี่ยนไปหน้าถัดไป (Next Page)
+            window.parent.postMessage('goNextPage', '*');
         }
     </script>
 </body>
