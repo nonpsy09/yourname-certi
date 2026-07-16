@@ -6,23 +6,43 @@
         body { font-family: 'Sarabun', sans-serif; text-align: center; background: transparent; margin: 0; padding: 10px; }
         input { width: 80%; padding: 12px; border: 2px solid #000000; border-radius: 8px; font-size: 18px; text-align: center; }
         button { background: #000000; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; font-weight: bold; }
-        .status { color: green; display: none; margin-top: 10px; font-weight: bold; }
+        .status { color: green; display: none; margin-top: 10px; font-weight: bold; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
     <input type="text" id="nameInput" placeholder="โปรดพิมพ์ชื่อของคุณเพื่อเริ่มการควบคุมคุณภาพ">
     <br>
-    <button onclick="saveName()">ตกลง </button>
-    <div id="status" class="status">✅ บันทึกชื่อเรียบร้อย! กดเพื่อเริ่มเกม</div>
+    <button id="saveBtn" onclick="saveName()">ตกลง</button>
+    <div id="status" class="status" onclick="goToGame()">✅ บันทึกชื่อเรียบร้อย! กดตรงนี้เพื่อเริ่มเกม</div>
 
     <script>
         function saveName() {
             var name = document.getElementById('nameInput').value;
-            if(name.trim() !== "") {
-                localStorage.setItem('player_name_shared', name); // เก็บชื่อไว้ในบราวเซอร์
+            if (name.trim() !== "") {
+                try {
+                    localStorage.setItem('player_name_shared', name);
+                } catch (e) {
+                    console.warn('localStorage ใช้ไม่ได้:', e);
+                }
+                document.getElementById('saveBtn').style.display = 'none';
+                document.getElementById('nameInput').disabled = true;
                 document.getElementById('status').style.display = 'block';
             } else {
                 alert("กรุณากรอกชื่อก่อนครับ");
+            }
+        }
+
+        function goToGame() {
+            try {
+                var targetEl = window.parent.document.querySelector('#f4bb9fad-e238-4d69-b483-c1d05ee19921');
+                if (targetEl) {
+                    targetEl.click();
+                } else {
+                    alert('หา element ปลายทางไม่เจอ ลองเช็ค selector อีกครั้ง');
+                }
+            } catch (e) {
+                alert('ไม่สามารถเข้าถึงหน้าหลักได้ (cross-origin): ' + e.message);
+                console.error(e);
             }
         }
     </script>
